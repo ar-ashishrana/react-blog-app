@@ -6,12 +6,8 @@ import { Link } from 'react-router'
 
 const Home = () => {
     const autStatus = useSelector((state)=> state.auth.status);
-    const [posts, setPosts] = useState([]);
-    useEffect(()=>{
-        service.getPosts([]).then((posts)=>{
-            if(posts) setPosts(posts.documents);
-        })
-    },[]);
+    const posts = useSelector((state)=>state.post.postData);
+
     if(!autStatus){
         return (
             <div className="w-full py-8 mt-4 text-center">
@@ -49,7 +45,7 @@ const Home = () => {
     <div className='w-full py-8'>
         <Container>
             <div className="flex flex-wrap">
-                {posts.map((post)=>(
+                {posts && posts.map((post)=>(
                     <div className="p-2 w-1/2" key={post.$id}>
                         <PostCard {...post} />
                     </div>

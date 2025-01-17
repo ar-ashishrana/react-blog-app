@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { login as authLogin } from '../store/authSlice'
 import { Link, useNavigate } from 'react-router'
 import authService from '../appwrite/auth';
@@ -30,17 +30,18 @@ const Login = () => {
         }
         setLoading(false);
     }
-    useEffect(()=>{}, [])
+    const primaryBg = useSelector((state)=>state.theme.primaryBg)
+    
   return (
     <div className='flex items-center justify-center w-full'>
-        <div className={`mx-auto w-full max-w-lg bg-gray-100 rounded-xl p-10 border border-black/10`}>
+        <div className={`mx-auto w-full max-w-lg ${primaryBg} rounded-xl p-10 border border-white/10`}>
             <div className='mb-2 flex justify-center'>
                 <span className='inline-block w-full max-w-[100px]'>
                     <Logo width='100%' />
                 </span>
             </div>
             <h2 className='text-2xl text-center font-bold leading-tight'>Login to your Account</h2>
-            <p className='mt-2 text-center text-black/60'>
+            <p className='mt-2 text-center text-xs'>
                 Don't have any account? <Link to="/signup">Sign up</Link>
             </p>
             {error && (<p className='text-red-600 text-center mt-8'>{error}</p>)}

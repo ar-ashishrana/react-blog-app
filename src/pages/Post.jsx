@@ -1,25 +1,25 @@
 import React, { useEffect, useState } from 'react'
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate, useParams } from 'react-router';
 import service from '../appwrite/config';
 import { Container, Button } from '../components';
 import parse from "html-react-parser";
 import { Link } from 'react-router';
+import { fetchPosts } from '../store/postSlice';
+
 const Post = () => {
     const [post, setPost] = useState(null);
     const { slug } = useParams();
     const navigate = useNavigate();
+    const dispatch = useDispatch();
 
     const userData = useSelector((state) => state.auth.userData);
     const isAuthor = post && userData ? post.userId === userData.$id : false;
 
+    const posts = useSelector((state)=> state.post.postData);
+    const singlePost = posts.find( (item) => item.$id === slug );
     useEffect(() => {
-        if (slug) {
-            service.getPost(slug).then((post) => {
-                if (post) setPost(post)
-                else navigate('/')
-            })
-        }
+        singlePost ? setPost(singlePost) : navigate('/');
     }, []);
 
     const deletePost = ()=>{
@@ -27,6 +27,7 @@ const Post = () => {
             service.deletePost(post.$id).then((data)=>{
                 if(data){
                     service.deleteFile(post.featuredImage);
+                    dispatch(fetchPosts());
                     navigate('/');
                 }
             })
@@ -39,7 +40,7 @@ const Post = () => {
                     <img
                         src={service.getFilePreview(post.featuredImage)}
                         alt={post.title}
-                        className="rounded-xl"
+                        className="rounded-xl w-full"
                     />
 
                     {isAuthor && (
